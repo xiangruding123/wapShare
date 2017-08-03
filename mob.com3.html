@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<title>mob.com3Test有问题</title>
+	</head>
+	<body>
+		<!--=======存在问题=======-->
+		<!--使用mobShare方法传递平台ID作为参数，实例该平台的分享对象，通过此对象的send方法进行提交-->
+		<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=1feac3bd7169c"></script>
+		<!-- 定义分享按钮 -->
+		<!--<button class="-mob-share-weibo">分享到新浪微博</button>-->
+		<hr />
+		<button id="share_weibo">分享到新浪微博</button>
+		<!-- 引入jQuery -->
+		<!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>-->
+		<script>
+			// 实例一个新浪微博的分享对象
+			var weibo = mobShare( 'weibo' );
+			
+			// 然后通过用户事件触发分享（浏览器限制原因，打开新窗口必需通过用户事件触发）
+			// 原生js的使用方法
+			document.getElementById( 'share_weibo' ).onclick = function() {
+			    weibo.send();
+			}
+			
+			// jquery库的使用方法
+//			$( '#share_weibo' ).click( function() {
+//			    weibo.send();
+//			} );
+			
+		</script>
+		<!--================-->
+	</body>
+</html>
+

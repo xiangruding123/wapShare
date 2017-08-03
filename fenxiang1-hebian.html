@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+	
+	function getWX(zone_id, postUrl){
+		
+	    var URL = urlConfig + '/CMSWXOther/WXShare';
+	    $.ajax({
+	        url:URL,
+	        type:'post',
+	        data:{
+	            zoneid: zone_id,
+	            url: postUrl
+	        },
+	        success:function(str){
+	            var json = new Function('return'+str)();
+	            if(json.code==200){
+	                wx.config({
+	                    debug:false,
+	                    appId:json.data.appId,
+	                    timestamp:json.data.timestamp,
+	                    nonceStr:json.data.nonceStr,
+	                    signature:json.data.signature,
+	                    jsApiList:[
+	                        'onMenuShareAppMessage',
+	                        'onMenuShareTimeline',
+	                        'hideMenuItems'
+	                    ]
+	                });
+	                wx.ready(function(){
+	                    wx.onMenuShareAppMessage({
+	                        title:$('title').html(),
+	                        desc: '分享',
+	                        link: json.data.url,
+	                        imgUrl:json.data.picUrl
+	                    });
+	                    wx.onMenuShareTimeline({
+	                        title:$('title').html(),
+	                        link: json.data.url,
+	                        imgUrl:json.data.picUrl
+	                    });
+	                    wx.hideMenuItems({
+	                        menuList:['menuItem:share:qq','menuItem:share:QZone']
+	                    })
+	                })
+	            }
+	        }
+	    })
+	};
+</script>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<title></title>
+	</head>
+	<body>
+		分享-fenxiang
+	</body>
+	
+</html>
+<script type="text/javascript">
+	//调用分享函数
+	//share
+    var _title = "我是红人店主，邀您共现创富梦",
+        _desc = "【赚钱】独创运营模式，全方位指导，专业团队，引领世界共创富，分红全球购打造亿万大众创富梦想的平台，财富等您加入！！！",
+        _pic = "http://www.fenhongshop.com/wap/images/wap/logo.png",
+        _url = WapSiteUrl + '/wap/tmpl/mircoshop/shop.html?shop_id=' + shop_id;  
+		
+    wxShare(_title, _desc, _url, _pic, _desc);
+    
+    //设置微信分享信息
+//	var wx_title = '分红全球购-海外直邮，正品保证！';
+//	var wx_desc = '网罗全球大牌，嗨购全球低价正品，海外直邮，极速达，话费红包天天领！~';
+//	var friend_title = '分红全球购——购全球·享分红！嗨购全球低价正品，海外直邮极速达，话费红包天天领~';
+//	
+//	var wx_link = location.href.split('#')[0];
+//	var wx_img = 'http://www.fenhongshop.com/wap/images/wap/logo.png';
+//
+//	wxShare(wx_title,wx_desc,wx_link,wx_img,friend_title);
+
+		
+	//=====================================================
+	//微信分享自定义事件
+	function wxShare(wx_title, wx_desc, wx_link, wx_img, friend_title, shop_id, shop_type, share_id, type) {
+		var url = location.href.split('#')[0]; //+"&resource_tags="+resourcetags;
+		try {
+			$.ajax({
+				url: WapSiteUrl + "/shop/index.php?act=wxtoken",
+				type: 'get',
+				data: {
+					url: url
+				},
+				dataType: 'json',
+				//  async:false,
+				success: function(result) {
+					var appId = result.appId;
+					var timestamp = result.timestamp;
+					var nonceStr = result.nonceStr;
+					var signature = result.signature;
+					var returl_url = result.url;
+
+					var timeStr = new Date().getTime();
+					if(wx_link.indexOf("packet") > 0) { //分享链接是来自红包 新人红包时不添加后缀
+
+					} else if(wx_link.indexOf("?") > 0) {
+						if(mid) {
+							wx_link = wx_link + "&flag=wap&deductid=" + mid + "&vid=" + mid + "@" + timeStr;
+						} else if(wx_link.indexOf("deductid") > 0) {
+
+						}
+					} else {
+						if(mid) {
+							wx_link = wx_link + "?flag=wap&deductid=" + mid + "&vid=" + mid + "@" + timeStr;
+						} else if(wx_link.indexOf("deductid") > 0) {
+
+						}
+					}
+					wx.config({
+						//debug: true,
+						appId: appId,
+						timestamp: timestamp,
+						nonceStr: nonceStr,
+						signature: signature,
+						jsApiList: [
+							'onMenuShareTimeline', //分享到朋友圈
+							'onMenuShareAppMessage', //分享给朋友
+							'onMenuShareQQ', //分享到QQ
+							'onMenuShareQZone' //qzone
+						]
+					});
+					//微信分享
+					wx.ready(function() {
+						//朋友
+						wx.onMenuShareAppMessage({
+							title: wx_title,
+							desc: wx_desc || wx_title,
+							link: wx_link,
+							imgUrl: wx_img || 'http://www.fenhongshop.com/wap/images/wap/logo.png',
+							success: function() {
+								shoper_commission_share(wx_title, wx_desc, wx_img, wx_link, _reason, "5", shop_id, shop_type, share_id, type);
+							}
+						});
+						//朋友圈
+						wx.onMenuShareTimeline({
+							title: friend_title || wx_title,
+							link: wx_link,
+							imgUrl: wx_img || 'http://www.fenhongshop.com/wap/images/wap/logo.png',
+							success: function() {
+								shoper_commission_share(wx_title, wx_desc, wx_img, wx_link, _reason, "4", shop_id, shop_type, share_id, type);
+							}
+						});
+						//QQ
+						wx.onMenuShareQQ({
+							title: wx_title, // 分享标题
+							desc: wx_desc || wx_title, // 分享描述
+							link: wx_link, // 分享链接
+							imgUrl: wx_img || 'http://www.fenhongshop.com/wap/images/wap/logo.png',
+							success: function() {
+								shoper_commission_share(wx_title, wx_desc, wx_img, wx_link, _reason, "2", shop_id, shop_type, share_id, type);
+							}
+						});
+						//qzone
+						wx.onMenuShareQZone({
+							title: wx_title, // 分享标题
+							desc: wx_desc || wx_title, // 分享描述
+							link: wx_link, // 分享链接
+							imgUrl: wx_img || 'http://www.fenhongshop.com/wap/images/wap/logo.png',
+							success: function() {
+								shoper_commission_share(wx_title, wx_desc, wx_img, wx_link, _reason, "6", shop_id, shop_type, share_id, type);
+							}
+						});
+					});
+				}
+			});
+		} catch(e) {}
+	}
+	//分享
+	function share(_title, _desc, _pic, _url, _reason, shop_id, shop_type, share_id, type) {
+		wxShare(_title, _desc, _pic, _url, _reason, shop_id, shop_type, share_id, type);
+		var timeStr = new Date().getTime();
+		if(_url.indexOf("packet") > 0) {   //分享链接是来自红包 新人红包时不添加后缀
+			
+		} else if(_url.indexOf("?") > 0) {
+			if(mid) {
+				_url = _url + "&flag=wap&deductid=" + mid + "&vid=" + mid + "@" + timeStr;
+			} else if(_url.indexOf("deductid") > 0) {
+
+			}
+		} else {
+			if(mid) {
+				_url = _url + "?flag=wap&deductid=" + mid + "&vid=" + mid + "@" + timeStr;
+			} else if(_url.indexOf("deductid") > 0) {
+
+			}
+		}
+		mobShare.config({
+
+			appkey: '13a3931a47072', // appkey
+
+			params: {
+				title: _title, // 分享标题
+				description: _desc, // 分享内容
+				pic: _pic, // 分享图片，使用逗号,隔开
+				url: _url, // 分享链接
+				reason: _reason //只应用与QZone与朋友网
+			},
+			callback: function(plat, params) {
+				if(plat == 'qq') {
+					sharetype = 2;
+				} else if(plat == 'weixin') {
+					sharetype = 5;
+				} else if(plat == 'qzone') {
+					sharetype = 6;
+				} else if(plat == 'weibo') {
+					sharetype = 3;
+				} else {
+					sharetype = 9;
+				}
+				shoper_commission_share(_title, _desc, _pic, _url, _reason, sharetype, shop_id, shop_type, share_id, type);
+			}
+
+		});
+		
+	    function shoper_commission_share(_title,_desc,_pic,_url,_reason,sharetype,shop_id,shop_type,share_id,type){
+	        _url=_url+"&sharetype="+sharetype;
+	        if(!share_id){
+	            $.ajax({
+	                url: WapSiteUrl+"/api/index.php?act=shoper_commission&op=share",
+	                type: 'post',
+	                data:{flag:"wap",token:token,mid:mid,content:_desc,title:_title,img:_pic,rurl:_url,shop_id:shop_id,shop_type:shop_type},
+	                async:false,
+	                dataType: 'json',
+	                success: function(data) {
+	                    if(data&&data.error){
+	
+	                    }
+	                }
+	            });
+	        }else{
+	            time_share(share_id,type);
+	        }
+	
+	    }
+	    
+	    function time_share(share_id,type){
+	
+	            $.ajax({
+	                url: WapSiteUrl+"/talent/api.php?act=share&op=share",
+	                type: 'post',
+	                data:{flag:"wap",token:token,mid:mid,share_id:share_id,type:type},
+	                async:false,
+	                dataType: 'json',
+	                success: function(data) {
+	                    if(data&&data.error){
+	
+	                    }
+	                }
+	            });
+	    }
+
+	}
+</script>

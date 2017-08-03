@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+	</body>
+
+</html>
+<script>
+	
+	public setConfig(configData) {
+		let appId = configData.tikectAppId;
+		let timestamp = configData.timeStamp;
+		let nonceStr = configData.nonceStr;
+		let signature = configData.signature;
+
+		wx.config({
+			debug: false,
+			appId: appId,
+			timestamp: timestamp,
+			nonceStr: nonceStr,
+			signature: signature,
+			jsApiList: [
+				'checkJsApi',
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage',
+				'onMenuShareQQ',
+				'onMenuShareWeibo',
+				'onMenuShareQZone',
+				'hideMenuItems',
+				'showMenuItems',
+				'hideAllNonBaseMenuItem',
+				'showAllNonBaseMenuItem',
+				'translateVoice',
+				'startRecord',
+				'stopRecord',
+				'onVoiceRecordEnd',
+				'playVoice',
+				'onVoicePlayEnd',
+				'pauseVoice',
+				'stopVoice',
+				'uploadVoice',
+				'downloadVoice',
+				'chooseImage',
+				'previewImage',
+				'uploadImage',
+				'downloadImage',
+				'getNetworkType',
+				'openLocation',
+				'getLocation',
+				'hideOptionMenu',
+				'showOptionMenu',
+				'closeWindow',
+				'scanQRCode',
+				'chooseWXPay',
+				'openProductSpecificView',
+				'addCard',
+				'chooseCard',
+				'openCard'
+			]
+
+		});
+		wx.ready(res => {
+			this.getWXrecommend();
+		});
+	}
+
+	// 微信分享给朋友
+	share(WXshare) {
+		wx.onMenuShareAppMessage({
+			title: WXshare.title, // 分享标题
+			desc: WXshare.desc, // 分享描述
+			link: WXshare.link + '?U=' + WXshare.recommendUser, // 分享链接
+			imgUrl: WXshare.imgUrl, // 分享图标
+			type: '', // 分享类型,music、video或link，不填默认为link
+			dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+			success: function(res) {
+				// 用户确认分享后执行的回调函数
+				// alert(JSON.stringify(res));
+				this.MenuSharealert("分享成功")
+			},
+			cancel: function(res) {
+				// 用户取消分享后执行的回调函数
+				this.MenuSharealert("分享失败")
+			}
+
+		});
+	}
+	// 微信分享朋友圈
+	share1(WXshare) {
+		wx.onMenuShareTimeline({
+			title: WXshare.title, // 分享标题
+			link: WXshare.link + '&U=' + WXshare.recommendUser, // 分享链接
+			imgUrl: WXshare.imgUrl, // 分享图标
+			success: function(res) {
+				// 用户确认分享后执行的回调函数
+				// alert(JSON.stringify(res));
+				this.MenuSharealert("分享成功")
+			},
+			cancel: function() {
+				// 用户取消分享后执行的回调函数
+				this.MenuSharealert("分享失败")
+			}
+		});
+	}
+</script>
